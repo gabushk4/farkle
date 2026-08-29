@@ -1,34 +1,46 @@
-import { PropsWithChildren, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { PropsWithChildren, useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-export function Collapsible({ children, title }: PropsWithChildren & { title: string }) {
+export function Collapsible({ children, title, childrenMaxHeight, onPress }: PropsWithChildren & { title: string; childrenMaxHeight: number; onPress?:()=>void }) {
   const [isOpen, setIsOpen] = useState(false);
   const theme = useColorScheme() ?? 'light';
+  const colors = Colors[theme]
+
+  const childrenHeight = useSharedValue(0)
+
+  const childrenAnimated = useAnimatedStyle(() => ({
+    height: childrenHeight.value
+  }))
+
+  useEffect(() => {
+    if (isOpen) {
+      childrenHeight.value = withTiming(childrenMaxHeight, {duration:300})
+    } else
+      childrenHeight.value = withTiming(0, {duration:300})
+  }, [isOpen])
 
   return (
-    <ThemedView>
+    <View>
       <TouchableOpacity
         style={styles.heading}
-        onPress={() => setIsOpen((value) => !value)}
-        activeOpacity={0.8}>
-        <IconSymbol
-          name="chevron.right"
-          size={18}
-          weight="medium"
-          color={theme === 'light' ? Colors.light.icon : Colors.dark.icon}
-          style={{ transform: [{ rotate: isOpen ? '90deg' : '0deg' }] }}
-        />
-
-        <ThemedText type="defaultSemiBold">{title}</ThemedText>
+        onPress={() => {
+          setIsOpen((value) => !value)
+          onPress?.()
+        }}
+        activeOpacity={0.9}>
+        
+        <Text style={{color:colors.textSecondary, fontSize:16}}>{title}</Text>
+        <FontAwesome6 name={isOpen ?"chevron-down":"chevron-right"} size={16} color={colors.border} />        
       </TouchableOpacity>
-      {isOpen && <ThemedView style={styles.content}>{children}</ThemedView>}
-    </ThemedView>
+      <Animated.View style={[childrenAnimated, styles.content ]}>
+        { children }
+      </Animated.View>
+    </View>
   );
 }
 
@@ -41,5 +53,6 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 6,
     marginLeft: 24,
+    overflow:'hidden',
   },
 });

@@ -4,27 +4,45 @@
  */
 
 import { Platform } from 'react-native';
+const HUE = 45; // doré
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const hsl = (h: number, s: number, l: number) => `hsl(${h}, ${s}%, ${l}%)`;
 
 export const Colors = {
-  light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
-  },
-  dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-  },
+    dark: {
+        background: hsl(0, 0, 4),
+        surface: hsl(0, 0, 11),
+        surfaceElevated: hsl(0, 0, 17),
+        accent: hsl(HUE, 65, 52),
+        accentMuted: hsl(HUE, 45, 16),
+        text: hsl(0, 0, 100),
+        textSecondary: hsl(0, 0, 63),
+        border: hsl(0, 0, 40),
+        running: hsl(0, 0, 100),
+        danger: hsl(4, 90, 58),
+        tint: hsl(HUE, 65, 52),
+    },
+    light: {
+        background: hsl(60, 15, 96),
+        surface: hsl(50, 12, 89),
+        surfaceElevated: hsl(0, 0, 100),
+        accent: hsl(HUE, 70, 40),
+        accentMuted: hsl(HUE, 40, 40),
+        text: hsl(0, 0, 4),
+        textSecondary: hsl(0, 0, 35),
+        border: hsl(50, 10, 82),
+        running: hsl(0, 0, 4),
+        danger: hsl(4, 75, 47),
+        tint: hsl(HUE, 70, 40),
+    },
+};
+
+export const Spacing = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 };
+export const Radius = { sm: 8, md: 12, lg: 20, full: 999 };
+export const Typography = {
+    scoreLarge: { fontSize: 36, fontWeight: '700' as const },
+    scoreSmall: { fontSize: 16, fontWeight: '500' as const },
+    body: { fontSize: 14, fontWeight: '400' as const },
 };
 
 export const Fonts = Platform.select({
